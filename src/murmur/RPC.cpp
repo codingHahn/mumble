@@ -64,12 +64,6 @@ void Server::setUserState(User *pUser, Channel *cChannel, bool mute, bool deaf, 
 	pUser->qsName = name;
 	hashAssign(pUser->qsComment, pUser->qbaCommentHash, comment);
 
-	if (cChannel != pUser->cChannel) {
-		changed = true;
-		mpus.set_channel_id(cChannel->iId);
-		userEnterChannel(pUser, cChannel, mpus);
-	}
-
 	if (changed) {
 		sendAll(mpus, ~ 0x010202);
 		if (mpus.has_comment() && ! pUser->qbaCommentHash.isEmpty()) {
@@ -77,7 +71,15 @@ void Server::setUserState(User *pUser, Channel *cChannel, bool mute, bool deaf, 
 			mpus.set_comment_hash(blob(pUser->qbaCommentHash));
 		}
 		sendAll(mpus, 0x010202);
+	}
 
+	if (cChannel != pUser->cChannel) {
+		changed = true;
+
+		userEnterChannel(pUser, cChannel, NULL);
+	}
+
+	if (changed) {
 		emit userStateChanged(pUser);
 	}
 }

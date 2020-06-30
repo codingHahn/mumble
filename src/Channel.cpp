@@ -84,7 +84,7 @@ bool Channel::lessThan(const Channel *first, const Channel *second) {
 }
 
 bool Channel::isSecret() {
-	return qhGroups.contains("members hidden");
+	return qhGroups.contains(QLatin1String("members hidden"));
 }
 
 Channel* Channel::getSecretLinked() {
